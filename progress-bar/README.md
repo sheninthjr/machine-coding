@@ -1,4 +1,4 @@
 # Progress Bar
 
-- [] Dynamic Progress Bar
-- [] Animation
+- [ ] Dynamic Progress Bar
+- [ ] Animation
