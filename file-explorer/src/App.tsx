@@ -1,35 +1,116 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import json from "./data.json";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface ListType {
+  id: string;
+  name: string;
+  isFolder: boolean;
+  children: ListType[];
 }
 
-export default App
+const List = ({ list, addNodeToList, deleteNodeFromList }) => {
+  const [isExpanded, setIsExpanded] = useState({});
+
+  return (
+    <div className="container">
+      {list.map((node) => (
+        <div key={node.id}>
+          {node.isFolder && (
+            <span
+              onClick={() =>
+                setIsExpanded((prev) => ({
+                  ...prev,
+                  [node.name]: !prev[node.name],
+                }))
+              }
+            >
+              {isExpanded?.[node.name] ? "- " : "+ "}
+            </span>
+          )}
+          <span>{node.name}</span>
+          {node.isFolder && (
+            <span onClick={() => addNodeToList(node.id)}>
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReTwWkt4HK3eAed65gOh1dwiJyIvjIIaRoag&s"
+                alt="icon"
+                className="icon"
+              />
+            </span>
+          )}
+          <span onClick={() => deleteNodeFromList(node.id)}>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png"
+              alt="icon"
+              className="icon"
+            />
+          </span>
+          {isExpanded?.[node.name] && node.isFolder && (
+            <List
+              list={node.children}
+              addNodeToList={addNodeToList}
+              deleteNodeFromList={deleteNodeFromList}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+function App() {
+  const [data, setData] = useState(json);
+
+  const addNodeToList = (parentId) => {
+    const name = prompt("Enter Name");
+    const updateTree = (list) => {
+      return list.map((node) => {
+        if (node.id === parentId) {
+          return {
+            ...node,
+            children: [
+              ...node.children,
+              {
+                id: Date.now().toString(),
+                name: name,
+                isFolder: true,
+                children: [],
+              },
+            ],
+          };
+        }
+        if (node.children) {
+          return { ...node, children: updateTree(node.children) };
+        }
+        return node;
+      });
+    };
+    setData((prev) => updateTree(prev));
+  };
+
+  const deleteNodeFromList = (itemId) => {
+    const updateTree = (list) => {
+      return list
+        .filter((node) => node.id !== itemId)
+        .map((node) => {
+          if (node.children) {
+            return { ...node, children: updateTree(node.children) };
+          }
+          return node;
+        });
+    };
+    setData((prev) => updateTree(prev));
+  };
+
+  return (
+    <div className="App">
+      <List
+        list={data}
+        addNodeToList={addNodeToList}
+        deleteNodeFromList={deleteNodeFromList}
+      />
+    </div>
+  );
+}
+
+export default App;

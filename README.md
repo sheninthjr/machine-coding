@@ -1,6 +1,6 @@
 # Problem Statements
 
-- [ ] File Explorer
+- [x] File Explorer
 - [ ] Progress Bar
 - [ ] Pagination
 - [ ] AutoComplete Search Bar
