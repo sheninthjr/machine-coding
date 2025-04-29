@@ -5,4 +5,5 @@
 - [ ] Pagination
 - [ ] AutoComplete Search Bar
 - [x] Nested CheckedBoxes
-- [x] OTP input
+- [x] OTP Input
+- [x] Chips Input
