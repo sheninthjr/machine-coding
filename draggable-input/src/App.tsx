@@ -44,14 +44,15 @@ function App() {
   }
 
   return(
-    <div style={{width: '400px'}}>
-      <ul style={{background: 'gray', padding: '4px'}}>
+    <div style={{display: 'flex', justifyContent: 'center'}}>
+      <ul style={{padding: '4px', width: '400px'}}>
         {items.map(item => (
           <li key={item.id}
           draggable='true'
+          style={{background: 'skyblue', margin: '4px',border: '1px solid black', listStyleType:"none"}}
           onDragStart={(e) => handleDragStart(e,item.id)}
           onDragOver={(e) => handleDragOver(e,item.id)}
-          onDragEnd={(e) => handleEnd()}
+          onDragEnd={() => handleEnd()}
           onDrop={(e) => handleDrop(e,item.id)}
           >
             <span>{item.content}</span>
